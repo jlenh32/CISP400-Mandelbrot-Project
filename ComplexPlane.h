@@ -19,4 +19,6 @@ class ComplexPlane
 		View m_view;
 		int m_zoomCount;
 		float m_aspectRatio;
+		int width;
+		int height;
 };

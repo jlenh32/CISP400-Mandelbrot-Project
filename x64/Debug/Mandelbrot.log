@@ -1,0 +1,6 @@
+﻿  ComplexPlane.cpp
+C:\VS Projects\Mandelbrot\ComplexPlane.cpp(16,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\VS Projects\Mandelbrot\ComplexPlane.cpp(17,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\VS Projects\Mandelbrot\ComplexPlane.cpp(24,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\VS Projects\Mandelbrot\ComplexPlane.cpp(25,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  Mandelbrot.vcxproj -> C:\VS Projects\Mandelbrot\x64\Debug\Mandelbrot.exe

@@ -64,5 +64,23 @@ size_t ComplexPlane::countIterations(Vector2f coord)
 
 void ComplexPlane::iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b)
 {
-
+	size_t colorScale = count * 4 - 1;
+	if (colorScale < 60)
+	{
+		r = 255;
+		g = 255 * (colorScale / 60.0);
+		b = 0;
+	}
+	else if (colorScale < 120)
+	{
+		r = 255 - 255 * ((colorScale - 60.0) / 60.0)
+		g = 255;
+		b = 0;
+	}
+	else if (colorScale < 180)
+	{
+		r = 0;
+		g = 255;
+		b = 255 * ((colorScale - 120.0) / 60.0)
+	}
 }

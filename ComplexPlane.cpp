@@ -5,7 +5,7 @@ using namespace std;
 ComplexPlane::ComplexPlane(float aspectRatio)
 {
 	m_aspectRatio = aspectRatio;
-	m_view.setSize(BASE_WIDTH, -BASE_HEIGHT * m_aspectRatio);
+	m_view.setSize(BASE_WIDTH, (-BASE_HEIGHT) * m_aspectRatio);
 	m_view.setCenter(0.0, 0.0);
 	m_zoomCount = 0;
 }
@@ -70,35 +70,35 @@ size_t ComplexPlane::countIterations(Vector2f coord)
 void ComplexPlane::iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b)
 {
 	float colorScale = count * 4 - 1;
-	if (colorScale < 60)
+	if (colorScale < 60.0)
 	{
-		r = 255 * (colorScale / 60.0);
-		g = 0;
-		b = 255;
+		r = 50 * (colorScale / 60.0);
+		g = 50 * (colorScale / 60.0);
+		b = 75;
 	}
-	else if (colorScale < 120)
+	else if (colorScale < 120.0)
 	{
 		r = 255;
+		g = 255 - 255 * ((colorScale - 60.0) / 60.0);
+		b = 0;
+	}
+	else if (colorScale < 180.0)
+	{
+		r = 150;
+		g = 100 * ((colorScale - 120.0) / 60.0);
+		b = 0;
+	}
+	else if (colorScale < 240.0)
+	{
+		r = 135 - 135 * ((colorScale - 180.0) / 60.0);
 		g = 0;
-		b = 255 - 255 * ((colorScale - 60.0) / 60.0);
+		b = 125;
 	}
-	else if (colorScale < 180)
+	else if (colorScale < 255.0)
 	{
-		r = 255;
-		g = 255 * ((colorScale - 120.0) / 60.0);
-		b = 0;
-	}
-	else if (colorScale < 240)
-	{
-		r = 255 - 255 * ((colorScale - 180.0) / 60.0);
-		g = 255;
-		b = 0;
-	}
-	else if (colorScale < 255)
-	{
-		r = 0;
-		g = 255;
-		b = 255 * ((colorScale - 240.0) / 60.0);
+		r = 50 * ((colorScale - 240.0) / 60.0);
+		g = 0;
+		b = 50;
 	}
 	else
 	{

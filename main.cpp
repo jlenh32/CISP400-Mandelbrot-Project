@@ -8,130 +8,112 @@ using namespace sf;
 
 int main()
 {
-	int desktopWidth = VideoMode::getDesktopMode().width;
-	int desktopHeight = VideoMode::getDesktopMode().height;
-	float aspectRatio = desktopWidth * desktopHeight;
+	size_t desktopWidth = VideoMode::getDesktopMode().width;
+	size_t desktopHeight = VideoMode::getDesktopMode().height;
+	float aspectRatio = desktopWidth / desktopHeight;
 	VideoMode vm(desktopWidth, desktopHeight);
-	RenderWindow window(vm, "deez", Style::Default);
-	
-	ComplexPlane* obj = nullptr;
+	RenderWindow window(vm, "Mandelbrot", Style::Default);
 
-	Font titleFont;
-	titleFont.loadFromFile("fonts/Roboto-Thin.ttf");
-	if (!titleFont.loadFromFile("fonts/Roboto-Thin.ttf"))
+	ComplexPlane screen(aspectRatio);
+
+	Font textFont;
+	if (!textFont.loadFromFile("fonts/Roboto-Thin.ttf"))
 	{
 		window.close();
 	}
-	Text clickText;
-	Text moveText;
 
-	VertexArray vArray(PrimitiveType Points, float aspectRatio);
+	Text viewAndMouse;
+	viewAndMouse.setFont(textFont);
+	Color color(255, 255, 255);
+	viewAndMouse.setFillColor(color);
+	viewAndMouse.setCharacterSize(50);
+
+	VertexArray vArray;
+	vArray.setPrimitiveType(Points);
+	vArray.resize(desktopWidth * desktopHeight);
 
 	enum class States { CALCULATING, DISPLAYING };
 	States state = States::CALCULATING;
 
 	Event event;
 
+	// ::-Main Loop Start-:: //
+	
 	while (window.isOpen())
 	{
+		// ::-Input Segment-:: //
+
 		while (window.pollEvent(event))
 		{
 			if (event.type == Event::Closed)
 			{
 				window.close();
 			}
+
 			if (event.type == Event::MouseButtonPressed)
 			{
+				Vector2f clickCoord = window.mapPixelToCoords(Mouse::getPosition(), 
+				screen.getView());
+
 				if (event.mouseButton.button == Mouse::Left)
 				{
-					Vector2i pixelPos = Mouse::getPosition(window);
-					Vector2f clickCoord = window.mapPixelToCoords(pixelPos);
-					stringstream ss;
-					ss << "Button @ " << Mouse::getPosition(window).x << " " << Mouse::getPosition(window).y << "\n";
-
-					clickText.setFont(titleFont);
-					string msg = ss.str();
-					clickText.setString(msg);
-					clickText.setCharacterSize(80);
-					Color color(255, 255, 255);
-					clickText.setFillColor(color);
-
-					FloatRect textRect = clickText.getLocalBounds();
-					clickText.setOrigin(textRect.left + textRect.width / 2.0, 0);
-					clickText.setPosition(window.getSize().x / 2.0, 0);
-
+					screen.zoomIn();
+					screen.setCenter(clickCoord);
 				}
 				if (event.mouseButton.button == Mouse::Right)
 				{
-					Vector2i pixelPos = Mouse::getPosition(window);
-					Vector2f clickCoord = window.mapPixelToCoords(pixelPos);
-					stringstream ss;
-					ss << "Button @ " << Mouse::getPosition(window).x << " " << Mouse::getPosition(window).y << "\n";
-
-					clickText.setFont(titleFont);
-					string msg = ss.str();
-					clickText.setString(msg);
-					clickText.setCharacterSize(80);
-					Color color(255, 255, 255);
-					clickText.setFillColor(color);
-
-					FloatRect textRect = clickText.getLocalBounds();
-					clickText.setOrigin(textRect.left + textRect.width / 2.0, 0);
-					clickText.setPosition(window.getSize().x / 2.0, 0);
-
-					//obj->setCenter(coord);
-
+					screen.zoomOut();
+					screen.setCenter(clickCoord);
 				}
 				state = States::CALCULATING;
 			}
 
 			if (event.type == Event::MouseMoved)
 			{
-				Vector2i pixel = Mouse::getPosition(window);
-				Vector2f currCoord = window.mapPixelToCoords(pixel);
-				stringstream ss;
-				ss << "Current pos @ " << currCoord.x << " " <<  currCoord.y << endl;
-				moveText.setFont(titleFont);
-				string message = ss.str();
-				moveText.setString(message);
-				moveText.setCharacterSize(60);
-				Color color(255, 255, 255);
-				moveText.setFillColor(color);
+				Vector2f mouseCoord = window.mapPixelToCoords(Mouse::getPosition(),
+				screen.getView());
 
-				FloatRect textRect = moveText.getLocalBounds();
-				moveText.setOrigin(textRect.left + textRect.width / 2.0, 0);
-				moveText.setPosition(window.getSize().x / 2.0, window.getSize().y / 1.2);
-
-				//obj->setMouseLocation(currCoord);
+				screen.setMouseLocation(mouseCoord);
 			}
-			
+
 			if (Keyboard::isKeyPressed(Keyboard::Escape))
 			{
 				window.close();
 			}
+		} // End input segment
+
+		// ::-Update Segment-:: //
+
+		if (state == States::DISPLAYING)
+		{
+			screen.loadText(viewAndMouse);
 		}
 
-		/*if (state == States::CALCULATING)
+		if (state == States::CALCULATING)
 		{
-			for (int i = 0; i < vArray.size(); i++)
+			for (int i = 0; i < desktopHeight; i++)
 			{
-				for (int j = 0; j < vArray.size(); i++)
+				for (int j = 0; j < desktopWidth; j++)
 				{
-					vArray[j + i * pixelWidth].position = { (float)j,(float)i };
+					vArray[j + i * desktopWidth].position = { float(j), float(i) };
+					Vector2f iterCoord = window.mapPixelToCoords(Vector2i(j, i),
+						screen.getView());
+					size_t count = screen.countIterations(iterCoord);
+					Uint8 r = 0;
+					Uint8 g = 0;
+					Uint8 b = 0;
+					screen.iterationsToRGB(count, r, g, b);
+					vArray[j + i * desktopWidth].color = { r, g, b };
 				}
 			}
-			Vector2i pixel = Mouse::getPosition(window);
-			Vector2f currCoord = window.mapPixelToCoords(pixel);
+			state = States::DISPLAYING;
+		} // End update segment
 
-
-		}
-		*/
-
+		// ::-Draw Segment-:: //
 		window.clear();
-		window.draw(clickText);
-		window.draw(moveText);
+		window.draw(vArray);
+		window.draw(viewAndMouse);
 		window.display();
 	}
 	return 0;
 }
-

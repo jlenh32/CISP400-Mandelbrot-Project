@@ -8,9 +8,9 @@ using namespace sf;
 
 int main()
 {
-	size_t desktopWidth = VideoMode::getDesktopMode().width;
-	size_t desktopHeight = VideoMode::getDesktopMode().height;
-	float aspectRatio = desktopWidth / desktopHeight;
+	float desktopWidth = VideoMode::getDesktopMode().width;
+	float desktopHeight = VideoMode::getDesktopMode().height;
+	float aspectRatio = desktopHeight / desktopWidth;
 	VideoMode vm(desktopWidth, desktopHeight);
 	RenderWindow window(vm, "Mandelbrot", Style::Default);
 
@@ -38,7 +38,7 @@ int main()
 	Event event;
 
 	// ::-Main Loop Start-:: //
-	
+
 	while (window.isOpen())
 	{
 		// ::-Input Segment-:: //
@@ -52,8 +52,8 @@ int main()
 
 			if (event.type == Event::MouseButtonPressed)
 			{
-				Vector2f clickCoord = window.mapPixelToCoords(Mouse::getPosition(), 
-				screen.getView());
+				Vector2f clickCoord = window.mapPixelToCoords(Mouse::getPosition(),
+					screen.getView());
 
 				if (event.mouseButton.button == Mouse::Left)
 				{
@@ -71,7 +71,7 @@ int main()
 			if (event.type == Event::MouseMoved)
 			{
 				Vector2f mouseCoord = window.mapPixelToCoords(Mouse::getPosition(),
-				screen.getView());
+					screen.getView());
 
 				screen.setMouseLocation(mouseCoord);
 			}

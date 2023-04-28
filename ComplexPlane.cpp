@@ -5,7 +5,7 @@ using namespace std;
 ComplexPlane::ComplexPlane(float aspectRatio)
 {
 	m_aspectRatio = aspectRatio;
-	m_view.setSize(BASE_WIDTH, (-BASE_HEIGHT) * m_aspectRatio);
+	m_view.setSize(BASE_WIDTH, BASE_HEIGHT * m_aspectRatio);
 	m_view.setCenter(0.0, 0.0);
 	m_zoomCount = 0;
 }
